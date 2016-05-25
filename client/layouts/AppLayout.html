@@ -1,7 +1,10 @@
 <template name="AppLayout">
-    {{> Header}}
+  {{> Header}}
+
+  {{#if isInRole 'admin'}}
     {{> AppNav}}
-    <main class="app-layout">
-        {{> Template.dynamic template=main}}
-    </main>
+  {{/if}}
+  <main class="app-layout">
+      {{> Template.dynamic template=main}}
+  </main>
 </template>
