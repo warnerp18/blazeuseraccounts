@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 Template.Users.onCreated(function() {
   this.autorun(() => {
     this.subscribe('allUsers');
@@ -12,6 +14,29 @@ Template.Users.helpers({
     return this.emails[0].address;
   },
   isAdmin: function() {
-    return Roles.userIsInRole(this._id, 'admin') ? 'admin' : 'normal'
+    return Roles.userIsInRole(this._id, 'admin') ? 'admin' : null;
+  },
+  dateFormat: function() {
+    return moment(this.createAt).format('MMMM D, YYYY');
+  },
+  editMode: function() {
+    return Session.get('currentUser') ? 'edit-mode' : null;
+  },
+  currentEdit: function() {
+    let user = Session.get('currentUser');
+    return user._id === this._id;
   }
 });
+
+Template.Users.events({
+  'click, .user_id': function(){
+    Session.set('currentUser', this);
+  },
+  'click, .toggle-admin': function() {
+     console.log(this);
+     Meteor.call('toggleAdmin', this._id);
+  },
+  'click, .close-edit-mode': function() {
+     Session.set('currentUser', null);
+  }
+})
